@@ -2,51 +2,20 @@
   'use strict';
 
   var API = 'https://script.google.com/macros/s/AKfycbz5kj8AdV60dorjY87FhXt9KiE1f8wJuP9yk4gqfjTa6-hg0UO96XclV6bCPVmoKXkk/exec';
-  var EARLY = ['1–2 lần', 'Không nhớ rõ'];
+  var SPEC = window.DEPO;
+  var Q = SPEC.q;
   var OTHER = '__other';
-
-  var Q = {
-    q1: { n: 1, type: 'one', t: 'Trong 30 ngày gần đây, tính cả hôm nay, bạn đã đến Đề-Pô khoảng bao nhiêu lần?',
-      o: ['1–2 lần', '3–4 lần', '5–8 lần', 'Từ 9 lần trở lên', 'Không nhớ rõ'] },
-    q2: { n: 2, type: 'one', t: 'Bạn bắt đầu đến Đề-Pô từ khoảng thời gian nào?',
-      o: ['Dưới 3 tháng', 'Từ 3 tháng đến dưới 1 năm', 'Từ 1 năm đến dưới 2 năm', 'Từ 2 năm trở lên', 'Không nhớ rõ'] },
-    q3: { n: 3, type: 'one', other: true, t: 'Hôm nay, bạn đến Đề-Pô chủ yếu để làm gì?',
-      o: ['Thưởng thức cà phê hoặc đồ uống', 'Gặp gỡ, trò chuyện', 'Làm việc hoặc học tập', 'Nghỉ ngơi, thư giãn', 'Tiện đường ghé quán'] },
-    q4: { n: 4, type: 'text', t: 'Điều gì ở Đề-Pô mà bạn mong quán giữ lại nhất?',
-      h: 'Có thể là một món nước, không gian, cách phục vụ hoặc bất kỳ điều gì bạn trân trọng.' },
-    q5: { n: 5, type: 'one', other: true, t: 'Nếu Đề-Pô có thể làm tốt hơn một điều, bạn muốn điều gì nhất?',
-      o: ['Hương vị hoặc chất lượng đồ uống', 'Sự đa dạng của menu', 'Giá cả', 'Tốc độ phục vụ', 'Cách phục vụ của nhân viên', 'Không gian hoặc tiện nghi', 'Vệ sinh', 'Hiện tại tôi chưa thấy cần cải thiện điều gì'] },
-    q6: { n: 6, type: 'text', t: 'Trong lần ghé Đề-Pô gần nhất (kể cả hôm nay), bạn đã gọi món nước gì?',
-      h: 'Nếu không nhớ tên món, bạn có thể mô tả ngắn; hoặc bỏ qua câu này.' },
-    q7: { n: 7, type: 'one', t: 'Nhìn chung, bạn hài lòng ở mức nào với đồ uống tại Đề-Pô?',
-      o: ['Rất không hài lòng', 'Không hài lòng', 'Bình thường', 'Hài lòng', 'Rất hài lòng', 'Chưa đủ trải nghiệm để đánh giá'] },
-    q8: { n: 8, type: 'text', t: 'Có điều gì về đồ uống mà bạn muốn Đề-Pô có thêm hoặc làm tốt hơn không?',
-      h: 'Bạn có thể nói về hương vị, đặc điểm hoặc một loại đồ uống; không cần nghĩ ra món mới.' },
-    q9: { n: 9, type: 'many', max: 2, other: true, t: 'Khi chọn đồ uống tại Đề-Pô, những yếu tố nào quan trọng nhất với bạn?',
-      h: 'Chọn tối đa 2 phương án.',
-      o: ['Hương vị hợp khẩu vị', 'Giá cả phù hợp', 'Chất lượng ổn định giữa các lần uống', 'Nguyên liệu hoặc thành phần đồ uống', 'Có thể điều chỉnh độ ngọt hoặc độ đậm', 'Có những hương vị mới lạ'] },
-    q10: { n: 10, type: 'one', other: true, t: 'Khi chọn món hoặc uống tại Đề-Pô, điều nào dưới đây khiến bạn chưa hài lòng nhất?',
-      o: ['Tôi chưa gặp vấn đề đáng kể', 'Ít món hợp khẩu vị', 'Chất lượng cùng một món chưa ổn định', 'Khó điều chỉnh độ ngọt hoặc độ đậm', 'Giá một số món chưa phù hợp', 'Lượng nước chưa phù hợp', 'Menu khó xem hoặc khó chọn món'] },
-    q11: { n: 11, type: 'one', other: true, t: 'Nếu Đề-Pô làm mới menu, bạn mong quán ưu tiên điều gì nhất?',
-      o: ['Giữ những món quen thuộc mà tôi yêu thích', 'Cải thiện chất lượng các món đang có', 'Bổ sung một số món mới', 'Làm menu rõ ràng, dễ xem và dễ chọn hơn', 'Tôi chưa có mong đợi thay đổi cụ thể'] }
-  };
-
-  var PAGES = [
-    { sec: 'Phần A · Thói quen đến Đề-Pô', qs: ['q1'] },
-    { sec: 'Phần A · Thói quen đến Đề-Pô', qs: ['q2', 'q3'] },
-    { sec: 'Phần B · Điều bạn muốn giữ lại và cải thiện', qs: ['q4', 'q5'] },
-    { sec: 'Phần C · Đồ uống tại Đề-Pô', qs: ['q6', 'q7', 'q8'] },
-    { sec: 'Phần C · Đồ uống tại Đề-Pô', qs: ['q9', 'q10', 'q11'] }
-  ];
+  var DRAFT = 'depo3_draft', DONE = 'depo3_done';
 
   var S = { code: '', page: 0, t0: 0, ans: {}, oth: {} };
   var $ = function (id) { return document.getElementById(id); };
-  var screens = [$('s0')];
+  var screens = { full: [], short: [] };
   var busy = false;
 
   function store(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function load(k) { try { return JSON.parse(sessionStorage.getItem(k) || 'null'); } catch (e) { return null; } }
   function drop(k) { try { sessionStorage.removeItem(k); } catch (e) {} }
+  function save() { if (S.code) store(DRAFT, S); }
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -55,24 +24,71 @@
     return e;
   }
 
-  function buildQuestion(key) {
+  // Keeps "Đề-Pô" on one line so the hyphen never splits the brand name.
+  function rich(tag, cls, text) {
+    var e = el(tag, cls);
+    text.split('Đề-Pô').forEach(function (part, i) {
+      if (i) e.appendChild(el('span', 'nb', 'Đề-Pô'));
+      e.appendChild(document.createTextNode(part));
+    });
+    return e;
+  }
+
+  function flow() { return SPEC.shortSegs.indexOf(S.ans.seg) >= 0 ? 'short' : 'full'; }
+  function pages() { return SPEC.flows[flow()]; }
+  function boxes(key) { return document.querySelectorAll('.qb[data-key="' + key + '"]'); }
+
+  function picked(key) {
+    var v = S.ans[key];
+    if (Q[key].type === 'many') return v || [];
+    return v == null || v === '' ? [] : [v];
+  }
+
+  function buildQuestion(fl, key, num, total) {
     var q = Q[key];
     var box = el('div', 'card qb');
-    box.id = 'box-' + key;
-    box.appendChild(el('span', 'qn', 'Câu ' + q.n + '/11'));
-    var title = el('p', 'q', q.t + ' ');
+    box.setAttribute('data-key', key);
+    var name = fl + '-' + key;
+    box.appendChild(el('span', 'qn', 'Câu ' + num + '/' + total));
+    var title = rich('p', 'q', q.t + ' ');
     title.appendChild(q.type === 'text' ? el('span', 'opt-tag', '(Không bắt buộc)') : el('span', 'req', '*'));
     box.appendChild(title);
-    if (q.h) box.appendChild(el('p', 'hint', q.h));
+    if (q.h) box.appendChild(rich('p', 'hint', q.h));
     box.appendChild(el('p', 'err'));
 
     if (q.type === 'text') {
-      var ta = el('textarea');
-      ta.maxLength = 300;
-      ta.placeholder = 'Câu trả lời của bạn';
-      ta.value = S.ans[key] || '';
-      ta.addEventListener('input', function () { S.ans[key] = ta.value; save(); });
-      box.appendChild(ta);
+      var t = q.short ? el('input') : el('textarea');
+      if (q.short) { t.type = 'text'; t.maxLength = 40; t.className = 'one-word'; } else { t.maxLength = 300; }
+      t.placeholder = q.short ? 'Một từ của bạn' : 'Bạn có thể bỏ qua nếu chưa nghĩ ra';
+      t.setAttribute('data-text', key);
+      t.addEventListener('input', function () { S.ans[key] = t.value; syncText(key, t); save(); });
+      box.appendChild(t);
+      return box;
+    }
+
+    if (q.type === 'scale') {
+      var legend = el('div', 'legend');
+      [['0', q.lo], ['10', q.hi]].forEach(function (p) {
+        var row = el('div', 'lg-row');
+        row.appendChild(el('span', 'lg-n', p[0]));
+        row.appendChild(el('span', '', '= ' + p[1]));
+        legend.appendChild(row);
+      });
+      box.appendChild(legend);
+      var grid = el('div', 'scale');
+      grid.setAttribute('role', 'radiogroup');
+      for (var n = 0; n <= 10; n++) {
+        (function (n) {
+          var b = el('button', 'sc', String(n));
+          b.type = 'button';
+          b.setAttribute('role', 'radio');
+          b.setAttribute('data-v', String(n));
+          b.setAttribute('aria-label', n + ' trên 10');
+          b.addEventListener('click', function () { S.ans[key] = n; afterPick(key); });
+          grid.appendChild(b);
+        })(n);
+      }
+      box.appendChild(grid);
       return box;
     }
 
@@ -83,174 +99,208 @@
       var lab = el('label', 'o' + (q.type === 'many' ? ' cb' : ''));
       var inp = el('input');
       inp.type = q.type === 'many' ? 'checkbox' : 'radio';
-      inp.name = key;
+      inp.name = name;
       inp.value = v;
       lab.appendChild(inp);
       lab.appendChild(el('span', 'mk'));
-      lab.appendChild(el('span', '', v === OTHER ? 'Khác (bạn ghi rõ)' : v));
-      inp.addEventListener('change', function () { onPick(key); });
+      lab.appendChild(el('span', 'ot', v === OTHER ? 'Khác (bạn ghi rõ)' : v));
+      inp.addEventListener('change', function () { onPick(key, v, inp.checked); });
       wrap.appendChild(lab);
     });
     box.appendChild(wrap);
 
     if (q.other) {
-      var oi = el('input');
+      var oi = el('input', 'other');
       oi.type = 'text';
       oi.maxLength = 150;
-      oi.placeholder = 'Ghi rõ ý kiến của bạn';
-      oi.className = 'other';
+      oi.placeholder = 'Bạn ghi rõ ở đây';
       oi.hidden = true;
-      oi.value = S.oth[key] || '';
-      oi.addEventListener('input', function () { S.oth[key] = oi.value; save(); });
-      var ow = el('div', 'other');
-      ow.appendChild(oi);
-      box.appendChild(ow);
+      oi.setAttribute('data-other', key);
+      oi.addEventListener('input', function () { S.oth[key] = oi.value; syncText(key, oi, true); clearErr(key); save(); });
+      box.appendChild(oi);
+    }
+    if (q.type === 'many') {
+      var fn = el('p', 'full-note', 'Đã chọn đủ ' + q.max + '. Muốn đổi, bạn bỏ chọn một ô trước.');
+      fn.hidden = true;
+      box.appendChild(fn);
     }
     return box;
   }
 
-  function syncQuestion(key) {
-    var q = Q[key], box = $('box-' + key);
-    if (!box || q.type === 'text') return;
-    var cur = S.ans[key];
-    var picked = q.type === 'many' ? (cur || []) : (cur ? [cur] : []);
-    var full = q.type === 'many' && picked.length >= q.max;
-    box.querySelectorAll('label.o').forEach(function (lab) {
-      var inp = lab.querySelector('input');
-      var on = picked.indexOf(inp.value) >= 0;
-      inp.checked = on;
-      lab.classList.toggle('on', on);
-      inp.disabled = full && !on;
-      lab.classList.toggle('off', full && !on);
-    });
-    var oi = box.querySelector('input.other');
-    if (oi) oi.hidden = picked.indexOf(OTHER) < 0;
+  function onPick(key, v, on) {
+    var q = Q[key];
+    if (q.type === 'many') {
+      var cur = picked(key).filter(function (x) { return x !== v; });
+      if (on) {
+        if (q.excl && v === q.excl) cur = [];
+        else if (q.excl) cur = cur.filter(function (x) { return x !== q.excl; });
+        if (cur.length < q.max) cur.push(v);
+      }
+      S.ans[key] = cur;
+    } else {
+      S.ans[key] = v;
+    }
+    afterPick(key);
+    if (v === OTHER && on) {
+      var vis = Array.prototype.filter.call(document.querySelectorAll('input[data-other="' + key + '"]'), function (i) { return i.offsetParent; });
+      if (vis[0] && !vis[0].value) vis[0].focus();
+    }
   }
 
-  function onPick(key) {
-    var q = Q[key], box = $('box-' + key);
-    if (q.type === 'many') {
-      S.ans[key] = Array.prototype.filter.call(box.querySelectorAll('input:checked'), function (i) { return i.name === key; })
-        .map(function (i) { return i.value; }).slice(0, q.max);
-    } else {
-      var c = box.querySelector('input[name="' + key + '"]:checked');
-      S.ans[key] = c ? c.value : '';
-    }
+  function afterPick(key) {
     syncQuestion(key);
     clearErr(key);
-    var oi = box.querySelector('input.other');
-    if (oi && !oi.hidden && !oi.value) oi.focus();
-    if (key === 'q1') updateButtons();
+    if (key === 'seg') {
+      var n = SPEC.flows[flow()].reduce(function (a, p) { return a + p.qs.length; }, 0);
+      boxes('seg').forEach(function (b) { b.querySelector('.qn').textContent = 'Câu 1/' + n; });
+      updateChrome();
+    }
     save();
   }
 
-  function clearErr(key) {
-    var box = $('box-' + key);
-    box.classList.remove('bad');
-    box.querySelector('.err').textContent = '';
+  function syncText(key, src, other) {
+    var sel = other ? 'input[data-other="' + key + '"]' : '[data-text="' + key + '"]';
+    document.querySelectorAll(sel).forEach(function (t) { if (t !== src) t.value = other ? (S.oth[key] || '') : (S.ans[key] || ''); });
   }
 
-  function setErr(key, msg) {
-    var box = $('box-' + key);
-    box.classList.add('bad');
-    box.querySelector('.err').textContent = msg;
+  function syncQuestion(key) {
+    var q = Q[key], cur = picked(key);
+    boxes(key).forEach(function (box) {
+      if (q.type === 'scale') {
+        box.querySelectorAll('.sc').forEach(function (b) {
+          var on = String(S.ans[key]) === b.getAttribute('data-v');
+          b.classList.toggle('on', on);
+          b.setAttribute('aria-checked', on ? 'true' : 'false');
+        });
+        return;
+      }
+      if (q.type === 'text') { var t = box.querySelector('[data-text]'); if (t) t.value = S.ans[key] || ''; return; }
+      var full = q.type === 'many' && cur.length >= q.max;
+      box.querySelectorAll('label.o').forEach(function (lab) {
+        var inp = lab.querySelector('input');
+        var on = cur.indexOf(inp.value) >= 0;
+        inp.checked = on;
+        lab.classList.toggle('on', on);
+        inp.disabled = full && !on;
+        lab.classList.toggle('off', full && !on);
+      });
+      var fnote = box.querySelector('.full-note');
+      if (fnote) fnote.hidden = !full;
+      var oi = box.querySelector('input.other');
+      if (oi) { oi.hidden = cur.indexOf(OTHER) < 0; oi.value = S.oth[key] || ''; }
+    });
+  }
+
+  function clearErr(key) {
+    boxes(key).forEach(function (b) { b.classList.remove('bad'); b.querySelector('.err').textContent = ''; });
+  }
+
+  function visibleBox(key) {
+    var arr = Array.prototype.filter.call(boxes(key), function (b) { return b.offsetParent; });
+    return arr[0];
   }
 
   function validatePage(i) {
     var first = null;
-    PAGES[i - 1].qs.forEach(function (key) {
+    pages()[i - 1].qs.forEach(function (key) {
       var q = Q[key];
       if (q.type === 'text') return;
-      var v = S.ans[key];
-      var picked = q.type === 'many' ? (v || []) : (v ? [v] : []);
       clearErr(key);
-      if (!picked.length) { setErr(key, 'Bạn vui lòng chọn một phương án.'); first = first || key; return; }
-      if (picked.indexOf(OTHER) >= 0 && !(S.oth[key] || '').trim()) { setErr(key, 'Bạn vui lòng ghi rõ ý kiến ở ô “Khác”.'); first = first || key; }
+      var box = visibleBox(key);
+      var msg = '';
+      if (q.type === 'scale') { if (S.ans[key] == null || S.ans[key] === '') msg = 'Bạn vui lòng chạm vào một số từ 0 đến 10.'; }
+      else if (!picked(key).length) msg = q.type === 'many' ? 'Bạn vui lòng chọn ít nhất một phương án.' : 'Bạn vui lòng chọn một phương án.';
+      else if (picked(key).indexOf(OTHER) >= 0 && !(S.oth[key] || '').trim()) msg = 'Bạn vui lòng ghi rõ ở ô “Khác”.';
+      if (msg) {
+        box.classList.add('bad');
+        box.querySelector('.err').textContent = msg;
+        first = first || box;
+      }
     });
-    if (first) {
-      var b = $('box-' + first);
-      window.scrollTo({ top: b.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' });
-    }
+    if (first) window.scrollTo({ top: first.getBoundingClientRect().top + window.scrollY - 96, behavior: 'smooth' });
     return !first;
   }
 
-  function isEarly() { return EARLY.indexOf(S.ans.q1) >= 0; }
-  function isLast() { return S.page === PAGES.length || (S.page === 1 && isEarly()); }
+  function isLast() { return S.page === pages().length; }
 
-  function updateButtons() {
+  function updateChrome() {
+    if (!$('done').hidden) return;
     $('back').hidden = S.page === 0;
-    $('next').textContent = S.page === 0 ? 'Bắt đầu' : (isLast() ? 'Gửi khảo sát' : 'Tiếp tục ›');
+    $('next').textContent = S.page === 0 ? 'Bắt đầu' : (isLast() ? 'Gửi khảo sát' : 'Tiếp tục');
+    var pr = $('progress');
+    pr.hidden = S.page === 0;
+    if (S.page > 0) {
+      var total = pages().length;
+      $('ptitle').textContent = pages()[S.page - 1].sec;
+      $('pstep').textContent = S.page + '/' + total;
+      $('pfill').style.width = Math.round(S.page / total * 100) + '%';
+    }
   }
 
   function show(i) {
-    screens.forEach(function (s, k) { if (s) s.hidden = k !== i; });
-    $('done').hidden = true;
     S.page = i;
-    var pr = $('progress');
-    pr.hidden = i === 0;
-    if (i > 0) {
-      var total = isEarly() ? 1 : PAGES.length;
-      $('ptitle').textContent = 'Tiến độ';
-      $('pstep').textContent = 'Trang ' + i + '/' + total;
-      $('pfill').style.width = Math.round(i / total * 100) + '%';
-    }
-    updateButtons();
+    $('s0').hidden = i !== 0;
+    ['full', 'short'].forEach(function (f) {
+      screens[f].forEach(function (s, k) { s.hidden = !(i > 0 && f === flow() && k === i - 1); });
+    });
+    $('done').hidden = true;
+    updateChrome();
     window.scrollTo(0, 0);
     save();
   }
 
   function buildPages() {
     var main = $('app'), done = $('done');
-    PAGES.forEach(function (p, idx) {
-      var sec = el('section', 'screen');
-      sec.hidden = true;
-      sec.appendChild(el('div', 'sec', p.sec));
-      p.qs.forEach(function (k) { sec.appendChild(buildQuestion(k)); });
-      main.insertBefore(sec, done);
-      screens[idx + 1] = sec;
+    ['full', 'short'].forEach(function (f) {
+      var total = SPEC.flows[f].reduce(function (a, p) { return a + p.qs.length; }, 0);
+      var num = 0;
+      SPEC.flows[f].forEach(function (p) {
+        var sec = el('section', 'screen');
+        sec.hidden = true;
+        p.qs.forEach(function (k) { num += 1; sec.appendChild(buildQuestion(f, k, num, total)); });
+        main.insertBefore(sec, done);
+        screens[f].push(sec);
+      });
     });
     Object.keys(Q).forEach(syncQuestion);
   }
 
-  function netMsg(msg) {
-    var n = $('netErr');
-    n.textContent = msg;
-    n.hidden = !msg;
-  }
-
+  function netMsg(msg) { var n = $('netErr'); n.textContent = msg; n.hidden = !msg; }
   function codeErr(msg) { $('codeErr').textContent = msg; }
 
   function getJSON(url, opts) {
-    return fetch(url, opts).then(function (r) {
-      if (!r.ok) throw new Error('http');
-      return r.json();
-    });
+    return fetch(url, opts).then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); });
   }
 
   function startWithCode() {
     var d = ($('code').value || '').replace(/\D/g, '');
-    if (!d || d.length > 3 || +d === 0) { codeErr('Mã gồm 3 chữ số do nhân viên đưa, ví dụ 007.'); return; }
+    if (!d || +d === 0) { codeErr('Bạn nhập 3 chữ số nhân viên đọc cho bạn, ví dụ 007.'); $('code').focus(); return; }
     var code = 'DP' + ('00' + d).slice(-3);
-    setBusy(true, 'Đang kiểm tra…');
+    $('code').blur();
+    setBusy(true, 'Đang kiểm tra mã…');
     getJSON(API + '?check=' + encodeURIComponent(code)).then(function (r) {
       if (!r.ok && r.err === 'closed') { codeErr('Khảo sát đã kết thúc. Cảm ơn bạn!'); return; }
-      if (!r.ok) { codeErr('Mã ' + code + ' không hợp lệ. Bạn vui lòng hỏi lại nhân viên.'); return; }
-      if (r.used) { codeErr('Mã ' + code + ' đã được dùng. Bạn vui lòng hỏi nhân viên mã khác.'); return; }
+      if (!r.ok) { codeErr('Mã ' + code + ' chưa đúng. Bạn hỏi lại nhân viên giúp nhé.'); return; }
+      if (r.used) { codeErr('Mã ' + code + ' đã được dùng. Bạn hỏi nhân viên mã khác giúp nhé.'); return; }
       codeErr('');
       if (S.code !== code) { S.code = code; S.t0 = Date.now(); }
       show(1);
     }).catch(function () {
-      codeErr('Chưa kết nối được. Bạn kiểm tra mạng (wifi quán) rồi bấm lại.');
+      codeErr('Chưa kết nối được. Bạn kiểm tra mạng (có thể dùng wifi quán) rồi bấm lại.');
     }).then(function () { setBusy(false); });
   }
 
   function payload() {
     var p = { code: S.code, dur: (Date.now() - S.t0) / 1000, hp: $('hp').value };
-    Object.keys(Q).forEach(function (k) {
-      var q = Q[k], v = S.ans[k];
-      if (q.type === 'text') { p[k] = (v || '').trim(); return; }
-      var fix = function (x) { return x === OTHER ? 'Khác: ' + (S.oth[k] || '').trim() : x; };
-      p[k] = q.type === 'many' ? (v || []).map(fix) : (v ? fix(v) : '');
+    pages().forEach(function (pg) {
+      pg.qs.forEach(function (k) {
+        var q = Q[k], v = S.ans[k];
+        var fix = function (x) { return x === OTHER ? 'Khác: ' + (S.oth[k] || '').trim() : x; };
+        if (q.type === 'text') p[k] = (v || '').trim();
+        else if (q.type === 'scale') p[k] = v;
+        else if (q.type === 'many') p[k] = (v || []).map(fix);
+        else p[k] = v ? fix(v) : '';
+      });
     });
     return p;
   }
@@ -259,29 +309,32 @@
     setBusy(true, 'Đang gửi…');
     netMsg('');
     getJSON(API, { method: 'POST', body: JSON.stringify(payload()) }).then(function (r) {
-      if (r.ok) { finish(r.code, r.time); return; }
-      if (r.err === 'used') netMsg('Mã ' + S.code + ' đã được dùng. Bạn vui lòng báo nhân viên.');
+      if (r.ok) { finish(r); return; }
+      if (r.err === 'used') netMsg('Mã ' + S.code + ' đã được dùng. Bạn báo nhân viên giúp nhé.');
       else if (r.err === 'closed') netMsg('Khảo sát đã kết thúc. Cảm ơn bạn!');
       else if (r.err === 'busy') netMsg('Hệ thống đang bận, bạn bấm “Gửi khảo sát” lại giúp nhé.');
-      else netMsg('Còn câu chưa trả lời. Bạn kiểm tra lại giúp nhé.');
+      else netMsg('Còn câu chưa trả lời. Bạn bấm “Quay lại” để kiểm tra giúp nhé.');
     }).catch(function () {
-      netMsg('Chưa gửi được. Bạn kiểm tra mạng rồi bấm “Gửi khảo sát” lại. Câu trả lời vẫn được giữ.');
+      netMsg('Chưa gửi được. Bạn kiểm tra mạng rồi bấm “Gửi khảo sát” lại. Câu trả lời vẫn được giữ nguyên.');
     }).then(function () { setBusy(false); });
   }
 
-  function finish(code, time) {
-    store('depo_done', { code: code, time: time });
-    drop('depo_draft');
-    showDone(code, time);
+  function finish(r) {
+    var d = { code: r.code, time: r.time, gift: r.gift };
+    store(DONE, d);
+    drop(DRAFT);
+    showDone(d);
   }
 
-  function showDone(code, time) {
-    screens.forEach(function (s) { if (s) s.hidden = true; });
+  function showDone(d) {
+    $('s0').hidden = true;
+    ['full', 'short'].forEach(function (f) { screens[f].forEach(function (s) { s.hidden = true; }); });
     $('progress').hidden = true;
     $('bar').hidden = true;
     netMsg('');
-    $('doneCode').textContent = code;
-    $('doneTime').textContent = 'Gửi lúc ' + time;
+    $('doneCode').textContent = d.code;
+    $('doneTime').textContent = 'Gửi lúc ' + d.time;
+    $('doneGift').textContent = d.gift;
     $('done').hidden = false;
     window.scrollTo(0, 0);
   }
@@ -290,12 +343,7 @@
     busy = on;
     $('next').disabled = on;
     $('back').disabled = on;
-    if (on) $('next').textContent = label; else updateButtons();
-  }
-
-  function save() {
-    if (!S.code) return;
-    store('depo_draft', S);
+    if (on) $('next').textContent = label; else updateChrome();
   }
 
   $('next').addEventListener('click', function () {
@@ -318,13 +366,13 @@
   });
   $('code').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('next').click(); });
 
-  var done = load('depo_done');
-  var draft = load('depo_draft');
+  var done = load(DONE);
+  var draft = load(DRAFT);
   if (draft && draft.code) {
     S = draft;
     $('code').value = draft.code.slice(2);
   }
   buildPages();
-  if (done) showDone(done.code, done.time);
-  else show(S.page || 0);
+  if (done) showDone(done);
+  else show(Math.min(S.page || 0, pages().length));
 })();
